@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Information</title>
+</head>
+<body>
+    <h1>{{ cv_data[1] }}</h1>
+    <p>Email: {{ cv_data[2] }}</p>
+    <p>Phone: {{ cv_data[3] }}</p>
+    <p>Address: {{ cv_data[4] }}</p>
+
+    <h2>Education</h2>
+    <ul>
+        {% for item in cv_data[5].split(', ') %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Skills</h2>
+    <p>{{ cv_data[6] }}</p>
+
+    <h2>Experience</h2>
+    <pre>{{ cv_data[7] }}</pre>
+
+    <h2>Projects</h2>
+    <p>{{ cv_data[8] }}</p>
+</body>
+</html>
+
