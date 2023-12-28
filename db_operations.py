@@ -1,45 +1,48 @@
+import json
 import sqlite3
 
 def create_table():
-    conn = sqlite3.connect('cv_data.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS cv_data (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            email TEXT,
-            education TEXT,
-            experience TEXT
-        )
-    ''')
-    conn.commit()
-    conn.close()
+    with sqlite3.connect('cv_data.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS cv_data (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
+                email TEXT,
+                phone TEXT,
+                address TEXT,
+                education TEXT,
+                skills TEXT,
+                experience TEXT,
+                projects TEXT
+            )
+        ''')
 
-def insert_cv_data(name, email, education, experience):
-    conn = sqlite3.connect('cv_data.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO cv_data (name, email, education, experience) 
-        VALUES (?, ?, ?, ?)
-    ''', (name, email, education, experience))
-    conn.commit()
-    conn.close()
+def insert_cv_data(name, email, phone, address, education, skills, experience, projects):
+    with sqlite3.connect('cv_data.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO cv_data (name, email, phone, address, education, skills, experience, projects) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (name, email, phone, address, education, skills, experience, projects))
 
 def fetch_latest_cv_data():
-    conn = sqlite3.connect('cv_data.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM cv_data ORDER BY id DESC LIMIT 1')
-    data = cursor.fetchone()
-    conn.close()
+    with sqlite3.connect('cv_data.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM cv_data ORDER BY id DESC LIMIT 1')
+        return cursor.fetchone()
 
-    if data:
-        cv_data = {
-            'name': data[1],
-            'email': data[2],
-            'education': data[3],
-            'experience': data[4]
-        }
-    else:
-        cv_data = {}
+def load_and_update_database_with_json(json_file_path):
+    with open(json_file_path, 'r') as json_file:
+        json_data = json.load(json_file)
 
-    return cv_data
+    name = json_data.get('name', '')
+    email = json_data.get('email', '')
+    phone = json_data.get('phone', '')
+    address = json_data.get('address', '')
+    education = json_data.get('education', '')
+    skills = json_data.get('skills', '')
+    experience = json_data.get('experience', '')
+    projects = json_data.get('projects', '')
+
+    insert_cv_data(name, email, phone, address, education, skills, experience, projects)
